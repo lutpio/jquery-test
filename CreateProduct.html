@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <title>demo tugas</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+  </head>
+  <style>
+    .custom-container {
+      max-width: 500px;
+      margin: 20px auto;
+    }
+  </style>
+  <script>
+    function input() {
+      // clear
+      $(".invalid-feedback").remove();
+      $("#alert").remove();
+      $("#productName").removeClass("is-invalid");
+      $("#productPrice").removeClass("is-invalid");
+
+      let specialChars = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+      let productName = $("#productName").val();
+      let productPrice = $("#productPrice").val();
+
+      let error = [];
+
+      // productName
+      if (productName === "") {
+        error.push({
+          name: "#productName",
+          temp_html: `<div class="invalid-feedback">Nama tidak boleh kosong</div>`,
+        });
+      } else if (productName.length > 25) {
+        error.push({
+          name: "#productName",
+          temp_html: `<div class="invalid-feedback">Panjang nama tidak boleh lebih 25</div>`,
+        });
+      } else if (specialChars.test(productName) == true) {
+        error.push({
+          name: "#productName",
+          temp_html: `<div class="invalid-feedback">Panjang nama tidak boleh lebih 25</div>`,
+        });
+      }
+
+      // productPrice
+      if (productPrice === "") {
+        error.push({
+          name: "#productPrice",
+          temp_html: `<div class="invalid-feedback">Harga tidak boleh kosong</div>`,
+        });
+      }
+
+      if (error.length > 0) {
+        for (let i = 0; i < error.length; i++) {
+          $(error[i]["name"]).addClass("is-invalid");
+          $(error[i]["name"]).after(error[i]["temp_html"]);
+        }
+        return;
+      }
+
+      $("#title").after(
+        `<div class="alert alert-primary" id="alert" role="alert">${productName} : ${productPrice}</div>`
+      );
+      return;
+    }
+  </script>
+  <body>
+    <div class="custom-container p-2">
+      <h1 id="title">Input Product</h1>
+
+      <div class="mb-3">
+        <label for="productName" class="form-label">Product Name</label>
+        <input type="text" class="form-control form-control-sm" id="productName" />
+      </div>
+
+      <div class="mb-3">
+        <label for="productPrice" class="form-label">Product Price</label>
+        <input type="number" class="form-control form-control-sm" id="productPrice" />
+      </div>
+
+      <button onclick="input()" class="btn btn-primary">Submit</button>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
