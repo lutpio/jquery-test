@@ -21,8 +21,99 @@
     }
   </style>
   <script>
+    function getSession() {
+      $(".tableValue").remove();
+
+      let storage = [];
+      $("#delete").attr("disabled", "disabled");
+      $("#search").attr("disabled", "disabled");
+      if (sessionStorage.getItem("data") != null) {
+        $("#delete").removeAttr("disabled");
+        $("#search").removeAttr("disabled");
+
+        let data = sessionStorage.getItem("data");
+        data = JSON.parse(data);
+
+        for (let i = 0; i < data.length; i++) {
+          storage.push(data[i]);
+        }
+
+        for (let i = 0; i < storage.length; i++) {
+          $("#tableRow").append(`
+          <tr class="tableValue">
+            <th scope="row">${i + 1}</th>
+            <td>${storage[i]["name"]}</td>
+            <td>${storage[i]["price"]}</td>
+          </tr>`);
+        }
+        return;
+      }
+    }
+
+    function search() {
+      $(".tableValue").remove();
+      let storage = [];
+      let inputSearch = $("#inputSearch").val();
+
+      if (sessionStorage.getItem("data") != null) {
+        let data = sessionStorage.getItem("data");
+        data = JSON.parse(data);
+
+        for (let i = 0; i < data.length; i++) {
+          storage.push(data[i]);
+        }
+
+        for (let i = 0; i < storage.length; i++) {
+          if (storage[i]["name"].includes(inputSearch) == true) {
+            $("#tableRow").append(`
+            <tr class="tableValue">
+              <th scope="row">${i + 1}</th>
+              <td>${storage[i]["name"]}</td>
+              <td>${storage[i]["price"]}</td>
+            </tr>`);
+          }
+        }
+        return;
+      }
+    }
+
+    function del() {
+      $(".tableValue").remove();
+      let storage = [];
+
+      if (sessionStorage.getItem("data") != null) {
+        let data = sessionStorage.getItem("data");
+        data = JSON.parse(data);
+
+        for (let i = 0; i < data.length; i++) {
+          storage.push(data[i]);
+        }
+
+        storage.pop();
+
+        if (storage.length == 0) {
+          sessionStorage.removeItem("data");
+          getSession();
+          return;
+        }
+        sessionStorage.setItem("data", JSON.stringify(storage));
+
+        for (let i = 0; i < storage.length; i++) {
+          $("#tableRow").append(`
+          <tr class="tableValue">
+            <th scope="row">${i + 1}</th>
+            <td>${storage[i]["name"]}</td>
+            <td>${storage[i]["price"]}</td>
+          </tr>`);
+        }
+
+        return;
+      }
+    }
+
     function input() {
       // clear
+      $(".tableValue").remove();
       $(".invalid-feedback").remove();
       $("#alert").remove();
       $("#productName").removeClass("is-invalid");
@@ -85,27 +176,48 @@
 
       sessionStorage.setItem("data", JSON.stringify(storage));
 
+      for (let i = 0; i < storage.length; i++) {
+        $("#tableRow").append(`
+          <tr class="tableValue">
+            <th scope="row">${i + 1}</th>
+            <td>${storage[i]["name"]}</td>
+            <td>${storage[i]["price"]}</td>
+          </tr>`);
+      }
+      $("#delete").removeAttr("disabled");
+      $("#search").removeAttr("disabled");
+      return;
       /*$("#title").after(
         `<div class="alert alert-primary" id="alert" role="alert">${productName} : ${productPrice}</div>`
       );
       return;*/
     }
   </script>
-  <body>
+  <body onload="getSession()">
     <div class="custom-container p-2">
       <h1 id="title">Input Product</h1>
       <form>
         <div class="mb-3">
           <label for="productName" class="form-label">Product Name</label>
-          <input type="text" class="form-control form-control-sm" id="productName" />
+          <input
+            type="text"
+            class="form-control form-control-sm rounded-0"
+            id="productName"
+          />
         </div>
 
         <div class="mb-3">
           <label for="productPrice" class="form-label">Product Price</label>
-          <input type="number" class="form-control form-control-sm" id="productPrice" />
+          <input
+            type="number"
+            class="form-control form-control-sm rounded-0"
+            id="productPrice"
+          />
         </div>
 
-        <button onclick="input()" type="button" class="btn btn-primary">Submit</button>
+        <button onclick="input()" type="button" class="btn btn-sm btn-primary rounded-0">
+          Submit
+        </button>
       </form>
     </div>
     <div class="custom-container p-2">
@@ -117,14 +229,40 @@
             <th scope="col">Product Price</th>
           </tr>
         </thead>
-        <tbody id="tableRow">
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-          </tr>
-        </tbody>
+        <tbody id="tableRow"></tbody>
       </table>
+
+      <div>
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            class="form-control rounded-0"
+            id="inputSearch"
+            placeholder="Serach by Name Product"
+          />
+          <button
+            class="btn btn-outline-primary rounded-0"
+            onclick="search()"
+            id="search"
+            type="button"
+          >
+            Search
+          </button>
+          <button class="btn btn-primary rounded-0" onclick="getSession()" type="button">
+            Reset
+          </button>
+        </div>
+        <div class="d-grid gap-2 d-md-block">
+          <button
+            class="btn btn-sm btn-primary rounded-0"
+            onclick="del()"
+            id="delete"
+            type="button"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
