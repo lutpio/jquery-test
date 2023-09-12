@@ -32,6 +32,16 @@
       let productName = $("#productName").val();
       let productPrice = $("#productPrice").val();
 
+      let storage = [];
+
+      if (sessionStorage.getItem("data") != null) {
+        let data = sessionStorage.getItem("data");
+        data = JSON.parse(data);
+
+        for (let i = 0; i < data.length; i++) {
+          storage.push(data[i]);
+        }
+      }
       let error = [];
 
       // productName
@@ -68,27 +78,53 @@
         return;
       }
 
-      $("#title").after(
+      storage.push({
+        name: productName,
+        price: productPrice,
+      });
+
+      sessionStorage.setItem("data", JSON.stringify(storage));
+
+      /*$("#title").after(
         `<div class="alert alert-primary" id="alert" role="alert">${productName} : ${productPrice}</div>`
       );
-      return;
+      return;*/
     }
   </script>
   <body>
     <div class="custom-container p-2">
       <h1 id="title">Input Product</h1>
+      <form>
+        <div class="mb-3">
+          <label for="productName" class="form-label">Product Name</label>
+          <input type="text" class="form-control form-control-sm" id="productName" />
+        </div>
 
-      <div class="mb-3">
-        <label for="productName" class="form-label">Product Name</label>
-        <input type="text" class="form-control form-control-sm" id="productName" />
-      </div>
+        <div class="mb-3">
+          <label for="productPrice" class="form-label">Product Price</label>
+          <input type="number" class="form-control form-control-sm" id="productPrice" />
+        </div>
 
-      <div class="mb-3">
-        <label for="productPrice" class="form-label">Product Price</label>
-        <input type="number" class="form-control form-control-sm" id="productPrice" />
-      </div>
-
-      <button onclick="input()" class="btn btn-primary">Submit</button>
+        <button onclick="input()" type="button" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+    <div class="custom-container p-2">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Product Price</th>
+          </tr>
+        </thead>
+        <tbody id="tableRow">
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
